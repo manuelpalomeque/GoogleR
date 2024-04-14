@@ -14,3 +14,6 @@ Implementé R para **limpiar, organizar, analizar, visualizar e informar sobre d
 - Conocer los marcos de datos y su uso en R.
 - Descubrir las opciones para generar visualizaciones en R.
 - Aprender sobre R Markdown para documentar la programación en R.
+
+## Certificado:
+[Certificado de Análisis de datos con programación en R](https://www.coursera.org/account/accomplishments/verify/E7L36JY9FYB5)
