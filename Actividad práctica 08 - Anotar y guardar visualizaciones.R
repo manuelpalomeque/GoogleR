@@ -71,5 +71,35 @@ fecha_maxima <- max(reservas_hotel$arrival_date_year)
 ggplot(data = reservas_hotel) +
   geom_bar(mapping = aes(x = market_segment, fill= hotel)) +
   facet_wrap(~hotel) +
-  labs(title="Segmentos de Mercados",
+  labs(title="Comparacion de Segmentos de Mercados por tipo de hotel para reservas",
        subtitle =  paste0("Datos desde el ", fecha_minima, " al ", fecha_maxima))
+
+# Voy a modificar el `subtitle` (subtitulo) para que se transforme en una `caption` 
+# (leyenda), que aparecera en la esquina inferior derecha.
+ggplot(data = reservas_hotel) +
+  geom_bar(mapping = aes(x = market_segment, fill= hotel)) +
+  facet_wrap(~hotel) +
+  theme(axis.text.x = element_text(angle = 45)) +
+  labs(title="Comparacion de Segmentos de Mercados por tipo de hotel para reservas",
+       caption=paste0("Datos desde el ", fecha_minima, " al ", fecha_maxima))
+
+# Limpiare las etiquetas del eje x e y para asegurarme de que sean claras. Para 
+# hacerlo, agregare la funcion `labs()` y usare `x=` e `y=`
+ggplot(data = reservas_hotel) +
+  geom_bar(mapping = aes(x = market_segment, fill= hotel)) +
+  facet_wrap(~hotel) +
+  theme(axis.text.x = element_text(angle = 45)) +
+  labs(title="Comparacion de Segmentos de Mercados por tipo de hotel para reservas",
+       caption=paste0("Datos desde el ", fecha_minima, " al ", fecha_maxima),
+       x="Segmentos de Mercados",
+       y="Cantidad de Reservas")
+
+## Paso 5: Guardar tu grafico---------------------------------------------------
+
+# usare la funcion `ggsave()` para guardar el imagen como un 7x7 
+ggsave('grafico1.png')
+
+# Se puede especificar la altura y el ancho del .png en el comando `ggsave()`.
+ggsave('grafico2.png',
+       width= 7,
+       height= 7)
