@@ -1,0 +1,118 @@
+---
+title: "23 - Actividad 08 en R Markdown"
+author: "Palomeque Jonathan Manuel"
+date: "2024-04-28"
+output: html_document
+---
+
+
+En esta actividad agregare anotaciones a una visualizacion de datos con ggplot2. Tambien guardare imagenes de visualizaciones de ggplot2 para poder agregarlas  directamente en presentaciones.
+
+## Escenario
+Como analista de datos en una empresa de reservas hoteleras, has estado creando visualizaciones en `R` con el paquete `ggplot2` para compartir conclusiones sobre los datos con los interesados. Despues de crear una serie de visualizaciones usando estetica y filtros de `ggplot()` y `ggplot2`, tu interesado te pide que agregues anotaciones a tus visualizaciones para ayudar a explicar tus resultados  en una presentacion. Afortunadamente, `ggplot2` tiene funciones de anotacion integradas.
+
+## Paso 1: Importar los datos
+
+```{r cargar paquetes, warning=FALSE}
+library('tidyverse')
+```
+
+```{r Importar archivo, warning=FALSE}
+reservas_hotel <- read_csv("hotel_bookings.csv", locale = readr::locale(encoding = "latin1"))
+```
+## Paso 2: Refrescar la memoria
+Obtener una muestra de los datos y tener una vista previa los nombres de todas las columnas:
+
+```{r head, warning=TRUE}
+head(reservas_hotel)
+```
+
+```{r colnames}
+colnames(reservas_hotel)
+```
+## Paso 3:  Realizar anotaciones en tu grafico
+Tu interesado te menciona que les gustaría que compartieras la visualización 
+desglosando el tipo de pago por ciudad, ya que esto ayudará a determinar cómo 
+la empresa dirigirá las promociones en el futuro. Te piden que crees una 
+versión limpia y etiquetada, y que la guardes como un archivo .png para que 
+ellos puedan incluirla en una presentación
+
+Graficos de barras de city_hotel y resort_hotel. En el eje x esta market_segment
+y en el eje Y esta count:
+```{r Graficos de barras de city_hotel y resort_hotel}
+ggplot(data = reservas_hotel) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel)
+```
+En esta visualizacion, no queda claro de donde provienen los datos, cual es la
+conclusion clave o ni siquiera que muestran los datos. Para explicar todo eso,
+puedes aprovechar las anotaciones en `ggplot2`
+
+Agregare un titulo (Segmentos de mercado) y diferenciare los graficos por color
+para darle una mayor claridad a la visualizacion de los datos a los interesados:
+```{r titulo y color}
+ggplot(data = reservas_hotel) +
+  geom_bar(mapping = aes(x = market_segment, fill= hotel)) +
+  facet_wrap(~hotel) +
+  labs(title="Segmentos de Mercados")
+```
+Quierro agregar la informacion de sobre cual periodo son los datos, para lo cual
+averiguare de cuando son los datos y los guardaré en variables:
+
+Año mas antiguo:
+```{r fechaminima}
+fecha_minima <- min(reservas_hotel$arrival_date_year)
+```
+
+Año mas actual:
+```{r fecha maxima}
+fecha_maxima <- max(reservas_hotel$arrival_date_year)
+```
+
+Ahora, agrego un subtitulo usando `subtitle=` en la funcion `labs()`. 
+Luego, usare la funcion `paste0()` para usar mis variables recien creadas en 
+mis etiquetas. 
+Esto es muy util, ya que si los datos se actualizan y se agregan datos mas 
+recientes, no tendre que modificar el codigo, porque las variables son dinamicas:
+
+```{r subtitulo}
+ggplot(data = reservas_hotel) +
+  geom_bar(mapping = aes(x = market_segment, fill= hotel)) +
+  facet_wrap(~hotel) +
+  labs(title="Comparacion de Segmentos de Mercados por tipo de hotel para reservas",
+       subtitle =  paste0("Datos desde el ", fecha_minima, " al ", fecha_maxima))
+```
+Voy a modificar el `subtitle` (subtitulo) para que se transforme en una `caption` 
+(leyenda), que aparecera en la esquina inferior derecha.
+
+```{r leyenda}
+ggplot(data = reservas_hotel) +
+  geom_bar(mapping = aes(x = market_segment, fill= hotel)) +
+  facet_wrap(~hotel) +
+  theme(axis.text.x = element_text(angle = 45)) +
+  labs(title="Comparacion de Segmentos de Mercados por tipo de hotel para reservas",
+       caption=paste0("Datos desde el ", fecha_minima, " al ", fecha_maxima))
+```
+
+Limpiare las etiquetas del eje x e y para asegurarme de que sean claras. Para 
+hacerlo, agregare la funcion `labs()` y usare `x=` e `y=`
+
+```{r etiquetas}
+ggplot(data = reservas_hotel) +
+  geom_bar(mapping = aes(x = market_segment, fill= hotel)) +
+  facet_wrap(~hotel) +
+  theme(axis.text.x = element_text(angle = 45)) +
+  labs(title="Comparacion de Segmentos de Mercados por tipo de hotel para reservas",
+       caption=paste0("Datos desde el ", fecha_minima, " al ", fecha_maxima),
+       x="Segmentos de Mercados",
+       y="Cantidad de Reservas")
+```
+
+## Paso 5: Guardar tu grafico
+usare la funcion `ggsave()` para guardar el imagen como un 7x7 
+```{r guardar grafico}
+ggsave('grafico2.png',
+       width= 7,
+       height= 7)
+```
+
